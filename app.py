@@ -9,7 +9,18 @@ from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 import platform
 
-# 🌻 Configuración del tema floral girasol
+# ==============================
+# 🌻 CONFIGURACIÓN INICIAL
+# ==============================
+st.set_page_config(
+    page_title="Analizador PDF 🌻",
+    layout="centered",
+    initial_sidebar_state="collapsed"
+)
+
+# ==============================
+# 🌻 ESTILOS FLORALES GIRASOL
+# ==============================
 st.markdown("""
 <style>
 .stApp {
@@ -49,37 +60,44 @@ h1, h2, h3, h4 {
 </style>
 """, unsafe_allow_html=True)
 
-# 🌻 Configuración de la página
-st.set_page_config(page_title="Analizador PDF 🌻", layout="centered", initial_sidebar_state="collapsed")
-
-# 🌻 Título principal
+# ==============================
+# 🌻 TÍTULO PRINCIPAL
+# ==============================
 st.title('🌻 Generación Aumentada por Recuperación (RAG) 💬')
 st.write("Versión de Python:", platform.python_version())
 
-# 🌼 Imagen decorativa
+# ==============================
+# 🌻 IMAGEN ILUSTRATIVA
+# ==============================
 try:
     image = Image.open('Chat_pdf.png')
-    st.image(image, width=350, caption="🌼 Analiza documentos con IA 🌼")
+    st.image(image, width=350)
 except Exception as e:
     st.warning(f"No se pudo cargar la imagen: {e}")
 
-# 🌻 Sidebar
+# ==============================
+# 🌻 SIDEBAR INFORMATIVO
+# ==============================
 with st.sidebar:
-    st.subheader("🌼 Asistente de Análisis de PDF 🌼")
-    st.markdown("Este agente te ayudará a analizar y responder preguntas sobre el contenido de tu archivo PDF.")
-    st.markdown("---")
+    st.subheader("🌼 Este agente te ayudará a analizar el PDF que cargues.")
 
-# 🌻 Ingreso de clave de API
+# ==============================
+# 🌻 CLAVE DE API
+# ==============================
 ke = st.text_input('🔑 Ingresa tu Clave de OpenAI', type="password")
 if ke:
     os.environ['OPENAI_API_KEY'] = ke
 else:
-    st.warning("🌻 Por favor ingresa tu clave de API de OpenAI para continuar")
+    st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
 
-# 🌻 Carga del PDF
-pdf = st.file_uploader("📄 Carga tu archivo PDF", type="pdf")
+# ==============================
+# 🌻 CARGA DE PDF
+# ==============================
+pdf = st.file_uploader("📄 Carga el archivo PDF", type="pdf")
 
-# 🌻 Procesamiento del PDF
+# ==============================
+# 🌻 PROCESAMIENTO DEL PDF
+# ==============================
 if pdf is not None and ke:
     try:
         # Extraer texto del PDF
@@ -87,10 +105,10 @@ if pdf is not None and ke:
         text = ""
         for page in pdf_reader.pages:
             text += page.extract_text()
-
-        st.info(f"📜 Texto extraído: {len(text)} caracteres encontrados 🌼")
-
-        # Dividir el texto en fragmentos
+        
+        st.info(f"Texto extraído: {len(text)} caracteres")
+        
+        # Dividir texto en fragmentos
         text_splitter = CharacterTextSplitter(
             separator="\n",
             chunk_size=500,
@@ -98,36 +116,33 @@ if pdf is not None and ke:
             length_function=len
         )
         chunks = text_splitter.split_text(text)
-        st.success(f"🌻 Documento dividido en {len(chunks)} fragmentos")
-
+        st.success(f"Documento dividido en {len(chunks)} fragmentos 🌻")
+        
         # Crear embeddings y base de conocimiento
         embeddings = OpenAIEmbeddings()
         knowledge_base = FAISS.from_texts(chunks, embeddings)
-
+        
         # Pregunta del usuario
-        st.subheader("💬 Pregunta sobre el documento")
-        user_question = st.text_area("🌼 Escribe tu pregunta aquí...")
+        st.subheader("🌼 Escribe qué quieres saber sobre el documento")
+        user_question = st.text_area("💬 Escribe tu pregunta aquí...")
 
         # Procesar la pregunta
         if user_question:
             docs = knowledge_base.similarity_search(user_question)
-
             llm = OpenAI(temperature=0, model_name="gpt-4o")
             chain = load_qa_chain(llm, chain_type="stuff")
-
-            with st.spinner("🌻 Analizando el documento..."):
-                response = chain.run(input_documents=docs, question=user_question)
-
+            response = chain.run(input_documents=docs, question=user_question)
+            
             # Mostrar respuesta
-            st.markdown("### 🌼 Respuesta:")
+            st.markdown("### 🌻 Respuesta:")
             st.markdown(response)
-
+                
     except Exception as e:
-        st.error(f"🚫 Error al procesar el PDF: {str(e)}")
+        st.error(f"Error al procesar el PDF: {str(e)}")
         import traceback
         st.error(traceback.format_exc())
 
 elif pdf is not None and not ke:
-    st.warning("🌻 Por favor ingresa tu clave de API de OpenAI para continuar")
+    st.warning("Por favor ingresa tu clave de API de OpenAI para continuar 🌼")
 else:
-    st.info("🌼 Por favor carga un archivo PDF para comenzar 🌼")
+    st.info("Por favor carga un archivo PDF para comenzar 🌻")
