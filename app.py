@@ -9,18 +9,14 @@ from langchain.llms import OpenAI
 from langchain.chains.question_answering import load_qa_chain
 import platform
 
-# ==============================
-# 🌻 CONFIGURACIÓN INICIAL
-# ==============================
+
 st.set_page_config(
     page_title="Analizador PDF 🌻",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
 
-# ==============================
-# 🌻 ESTILOS FLORALES GIRASOL
-# ==============================
+
 st.markdown("""
 <style>
 .stApp {
@@ -60,17 +56,13 @@ h1, h2, h3, h4 {
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================
-# 🌻 TÍTULO PRINCIPAL
-# ==============================
+
 st.title('🌻 Generación Aumentada por Recuperación (RAG) 💬')
 st.write("Versión de Python:", platform.python_version())
 
-# ==============================
-# 🌻 IMAGEN ILUSTRATIVA
-# ==============================
+
 try:
-    image = Image.open('Chat_pdf.png')
+    image = Image.open('1.jpg')
     st.image(image, width=350)
 except Exception as e:
     st.warning(f"No se pudo cargar la imagen: {e}")
@@ -81,23 +73,17 @@ except Exception as e:
 with st.sidebar:
     st.subheader("🌼 Este agente te ayudará a analizar el PDF que cargues.")
 
-# ==============================
-# 🌻 CLAVE DE API
-# ==============================
+
 ke = st.text_input('🔑 Ingresa tu Clave de OpenAI', type="password")
 if ke:
     os.environ['OPENAI_API_KEY'] = ke
 else:
     st.warning("Por favor ingresa tu clave de API de OpenAI para continuar")
 
-# ==============================
-# 🌻 CARGA DE PDF
-# ==============================
+
 pdf = st.file_uploader("📄 Carga el archivo PDF", type="pdf")
 
-# ==============================
-# 🌻 PROCESAMIENTO DEL PDF
-# ==============================
+
 if pdf is not None and ke:
     try:
         # Extraer texto del PDF
